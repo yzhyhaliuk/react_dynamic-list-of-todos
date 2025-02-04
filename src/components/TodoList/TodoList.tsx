@@ -1,10 +1,10 @@
 import React from 'react';
 import { Todo } from '../../types/Todo';
-import classNames from 'classnames';
+import { PostItem } from '../PostItem/PostItem';
 
 type Props = {
   todos: Todo[];
-  onSelect: (userId: number) => void;
+  onSelect: (id: number) => void;
   selectedId: number | null;
 };
 
@@ -26,49 +26,12 @@ export const TodoList: React.FC<Props> = ({ todos, onSelect, selectedId }) => {
 
       <tbody>
         {todos.map(todo => (
-          <tr
-            data-cy="todo"
+          <PostItem
+            todo={todo}
+            onSelect={onSelect}
+            selectedId={selectedId}
             key={todo.id}
-            className={classNames({
-              'has-background-info-light': selectedId === todo.id,
-            })}
-          >
-            <td className="is-vcentered">{todo.id}</td>
-            <td className="is-vcentered">
-              {todo.completed && (
-                <span className="icon" data-cy="iconCompleted">
-                  <i className="fas fa-check" />
-                </span>
-              )}
-            </td>
-            <td className="is-vcentered is-expanded">
-              <p
-                className={classNames({
-                  'has-text-success': todo.completed,
-                  'has-text-danger': !todo.completed,
-                })}
-              >
-                {todo.title}
-              </p>
-            </td>
-            <td className="has-text-right is-vcentered">
-              <button
-                data-cy="selectButton"
-                className="button"
-                type="button"
-                onClick={() => onSelect(todo.id)}
-              >
-                <span className="icon">
-                  <i
-                    className={classNames('far', {
-                      'fa-eye': selectedId !== todo.id,
-                      'fa-eye-slash': selectedId === todo.id,
-                    })}
-                  />
-                </span>
-              </button>
-            </td>
-          </tr>
+          />
         ))}
       </tbody>
     </table>

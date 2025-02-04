@@ -1,57 +1,32 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
+import { FilterStatus } from '../../types/FilterStatus';
 
 type Props = {
-  onFilterAll: () => void;
-  onFilterActive: () => void;
-  onFilterCompleted: () => void;
-  onFilterByTitle: (query: string) => void;
+  query: string;
+  setQuery: (query: string) => void;
+  status: FilterStatus;
+  setStatus: (status: FilterStatus) => void;
 };
 
-enum FilterStatus {
-  All = 'all',
-  Active = 'active',
-  Completed = 'completed',
-}
-
 export const TodoFilter: React.FC<Props> = ({
-  onFilterAll,
-  onFilterActive,
-  onFilterCompleted,
-  onFilterByTitle,
+  query,
+  setQuery,
+  status,
+  setStatus,
 }) => {
-  const [query, setQuery] = useState('');
-  const [filterStatus, setFilterStatus] = useState('all');
-
   function handleTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newQuery = event.target.value;
 
     setQuery(newQuery);
   }
 
+  function handleFilterChange(event: React.ChangeEvent<HTMLSelectElement>) {
+    setStatus(event.target.value as FilterStatus);
+  }
+
   function clearInput() {
     setQuery('');
   }
-
-  useEffect(() => {
-    if (filterStatus === FilterStatus.All) {
-      onFilterAll();
-    } else if (filterStatus === FilterStatus.Active) {
-      onFilterActive();
-    } else if (filterStatus === FilterStatus.Completed) {
-      onFilterCompleted();
-    }
-
-    if (query !== '') {
-      onFilterByTitle(query);
-    }
-  }, [
-    query,
-    filterStatus,
-    onFilterAll,
-    onFilterActive,
-    onFilterCompleted,
-    onFilterByTitle,
-  ]);
 
   return (
     <form className="field has-addons">
@@ -59,8 +34,8 @@ export const TodoFilter: React.FC<Props> = ({
         <span className="select">
           <select
             data-cy="statusSelect"
-            value={filterStatus}
-            onChange={event => setFilterStatus(event.target.value)}
+            value={status}
+            onChange={handleFilterChange}
           >
             <option value="all">All</option>
             <option value="active">Active</option>
