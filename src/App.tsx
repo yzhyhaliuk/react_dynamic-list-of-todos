@@ -12,14 +12,16 @@ import { Todo } from './types/Todo';
 
 export const App: React.FC = () => {
   const [allTodos, setAllTodos] = useState<Todo[]>([]);
+  const [filteredTodos, setFilteredTodos] = useState<Todo[]>([]);
   const [todos, setTodos] = useState<Todo[]>([]);
   const [loading, setLoading] = useState(false);
-  const [selectedId, setSelectedId] = useState(0);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
 
   useEffect(() => {
     setLoading(true);
     getTodos().then(todosFromServer => {
       setAllTodos(todosFromServer);
+      setFilteredTodos(todosFromServer);
       setTodos(todosFromServer);
       setLoading(false);
     });
@@ -27,25 +29,32 @@ export const App: React.FC = () => {
 
   const handleFilterAll = useCallback(() => {
     setTodos(allTodos);
+    setFilteredTodos(allTodos);
   }, [allTodos]);
 
   const handleFilterActive = useCallback(() => {
-    setTodos(allTodos.filter(todo => !todo.completed));
+    const activeTodos = allTodos.filter(todo => !todo.completed);
+
+    setFilteredTodos(activeTodos);
+    setTodos(activeTodos);
   }, [allTodos]);
 
   const handleFilterComplete = useCallback(() => {
-    setTodos(allTodos.filter(todo => todo.completed));
+    const completedTodos = allTodos.filter(todo => todo.completed);
+
+    setFilteredTodos(completedTodos);
+    setTodos(completedTodos);
   }, [allTodos]);
 
   const filterByTitle = useCallback(
     (query: string) => {
       setTodos(
-        todos.filter(todo =>
+        filteredTodos.filter(todo =>
           todo.title.toLowerCase().includes(query.toLowerCase()),
         ),
       );
     },
-    [todos],
+    [filteredTodos],
   );
 
   return (

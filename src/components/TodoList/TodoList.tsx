@@ -5,14 +5,10 @@ import classNames from 'classnames';
 type Props = {
   todos: Todo[];
   onSelect: (userId: number) => void;
-  selectedId: number;
+  selectedId: number | null;
 };
 
 export const TodoList: React.FC<Props> = ({ todos, onSelect, selectedId }) => {
-  function handleSelect(id: number) {
-    onSelect(id);
-  }
-
   return (
     <table className="table is-narrow is-fullwidth">
       <thead>
@@ -30,7 +26,13 @@ export const TodoList: React.FC<Props> = ({ todos, onSelect, selectedId }) => {
 
       <tbody>
         {todos.map(todo => (
-          <tr data-cy="todo" key={todo.id} className="">
+          <tr
+            data-cy="todo"
+            key={todo.id}
+            className={classNames({
+              'has-background-info-light': selectedId === todo.id,
+            })}
+          >
             <td className="is-vcentered">{todo.id}</td>
             <td className="is-vcentered">
               {todo.completed && (
@@ -54,7 +56,7 @@ export const TodoList: React.FC<Props> = ({ todos, onSelect, selectedId }) => {
                 data-cy="selectButton"
                 className="button"
                 type="button"
-                onClick={() => handleSelect(todo.id)}
+                onClick={() => onSelect(todo.id)}
               >
                 <span className="icon">
                   <i

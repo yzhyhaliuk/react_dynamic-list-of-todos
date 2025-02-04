@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 type Props = {
   onFilterAll: () => void;
@@ -13,64 +13,39 @@ export const TodoFilter: React.FC<Props> = ({
   onFilterCompleted,
   onFilterByTitle,
 }) => {
-  const [isQuery, setIsQuery] = useState(false);
   const [query, setQuery] = useState('');
   const [filterStatus, setFilterStatus] = useState('all');
-
-  function handleChange(event: ChangeEvent<HTMLSelectElement>) {
-    const status = event.target.value;
-
-    setFilterStatus(status);
-
-    switch (status) {
-      case 'all':
-        onFilterAll();
-        break;
-
-      case 'active':
-        onFilterActive();
-        break;
-
-      case 'completed':
-        onFilterCompleted();
-        break;
-
-      default:
-        break;
-    }
-  }
 
   function handleTitleChange(event: React.ChangeEvent<HTMLInputElement>) {
     const newQuery = event.target.value;
 
     setQuery(newQuery);
-    onFilterByTitle(newQuery.toLowerCase());
-    setIsQuery(newQuery.length > 0);
   }
 
   function clearInput() {
     setQuery('');
-    setIsQuery(false);
-    onFilterByTitle('');
   }
 
   useEffect(() => {
-    if (!query) {
-      switch (filterStatus) {
-        case 'all':
-          onFilterAll();
-          break;
-        case 'active':
-          onFilterActive();
-          break;
-        case 'completed':
-          onFilterCompleted();
-          break;
-        default:
-          break;
-      }
+    if (filterStatus === 'all') {
+      onFilterAll();
+    } else if (filterStatus === 'active') {
+      onFilterActive();
+    } else if (filterStatus === 'completed') {
+      onFilterCompleted();
     }
-  }, [query, filterStatus, onFilterActive, onFilterAll, onFilterCompleted]);
+
+    if (query !== '') {
+      onFilterByTitle(query);
+    }
+  }, [
+    query,
+    filterStatus,
+    onFilterAll,
+    onFilterActive,
+    onFilterCompleted,
+    onFilterByTitle,
+  ]);
 
   return (
     <form className="field has-addons">
@@ -79,7 +54,7 @@ export const TodoFilter: React.FC<Props> = ({
           <select
             data-cy="statusSelect"
             value={filterStatus}
-            onChange={handleChange}
+            onChange={event => setFilterStatus(event.target.value)}
           >
             <option value="all">All</option>
             <option value="active">Active</option>
@@ -103,7 +78,7 @@ export const TodoFilter: React.FC<Props> = ({
 
         <span className="icon is-right" style={{ pointerEvents: 'all' }}>
           {/* eslint-disable-next-line jsx-a11y/control-has-associated-label */}
-          {isQuery && (
+          {query.length > 0 && (
             <button
               data-cy="clearSearchButton"
               type="button"

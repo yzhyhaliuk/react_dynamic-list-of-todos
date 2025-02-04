@@ -7,7 +7,7 @@ import { Todo } from '../../types/Todo';
 type Props = {
   id: number;
   todos: Todo[];
-  onClose: (id: number) => void;
+  onClose: (id: number | null) => void;
 };
 
 export const TodoModal: React.FC<Props> = ({ id, todos, onClose }) => {
@@ -47,7 +47,7 @@ export const TodoModal: React.FC<Props> = ({ id, todos, onClose }) => {
               type="button"
               className="delete"
               data-cy="modal-close"
-              onClick={() => onClose(0)}
+              onClick={() => onClose(null)}
             />
           </header>
 
@@ -66,7 +66,9 @@ export const TodoModal: React.FC<Props> = ({ id, todos, onClose }) => {
 
               {' by '}
 
-              <a href={`mailto: ${data?.email}`}>{data?.name}</a>
+              {data?.email && data.name && (
+                <a href={`mailto: ${data.email}`}>{data.name}</a>
+              )}
             </p>
           </div>
         </div>
