@@ -7,6 +7,12 @@ type Props = {
   onFilterByTitle: (query: string) => void;
 };
 
+enum FilterStatus {
+  All = 'all',
+  Active = 'active',
+  Completed = 'completed',
+}
+
 export const TodoFilter: React.FC<Props> = ({
   onFilterAll,
   onFilterActive,
@@ -27,11 +33,11 @@ export const TodoFilter: React.FC<Props> = ({
   }
 
   useEffect(() => {
-    if (filterStatus === 'all') {
+    if (filterStatus === FilterStatus.All) {
       onFilterAll();
-    } else if (filterStatus === 'active') {
+    } else if (filterStatus === FilterStatus.Active) {
       onFilterActive();
-    } else if (filterStatus === 'completed') {
+    } else if (filterStatus === FilterStatus.Completed) {
       onFilterCompleted();
     }
 
